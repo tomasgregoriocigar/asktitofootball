@@ -37,13 +37,20 @@
   .askbox input { flex:1; padding:12px; border-radius:8px; border:2px solid var(--green); background:var(--panel2); color:var(--ink); font-size:1rem; box-shadow:0 0 0 3px rgba(46,160,67,.18); }
   .askbox input::placeholder { font-weight:300; color:#9fb3a8; letter-spacing:.02em; }
   .askbox button { padding:12px 18px; border-radius:8px; border:0; background:var(--green); color:#0d1117; font-weight:bold; font-size:1rem; cursor:pointer; }
-  .install { display:none; align-items:center; gap:10px; background:var(--panel); border:1px solid var(--green-dk); border-radius:12px; padding:12px 14px; margin:0 0 20px; }
+  .install { display:none; align-items:center; flex-wrap:wrap; gap:10px; background:var(--panel); border:1px solid var(--green-dk); border-radius:12px; padding:12px 14px; margin:0 0 20px; }
   .install.show { display:flex; }
   .install img { width:40px; height:40px; border-radius:9px; }
   .install .txt { flex:1; font-size:.95rem; }
   .install .txt b { color:var(--green); }
   .install button { padding:9px 14px; border-radius:8px; border:0; background:var(--green); color:#0d1117; font-weight:bold; cursor:pointer; }
+  .install button.ghost { background:none; border:1px solid var(--green-dk); color:var(--green); font-weight:normal; }
   .install .x { background:none; color:var(--dim); font-weight:normal; padding:9px 6px; }
+  .applepanel { display:none; background:var(--panel); border:1px solid var(--green-dk); border-radius:12px; padding:12px 14px; margin:-12px 0 20px; font-size:.95rem; }
+  .applepanel.show { display:block; }
+  .applepanel .applehead { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .applepanel .applehead b { color:var(--green); }
+  .applepanel ol { margin:8px 0 2px; padding-left:20px; line-height:1.55; }
+  .applepanel .x { background:none; border:0; color:var(--dim); cursor:pointer; padding:4px 6px; font-size:1rem; }
   .card { background:var(--panel); border:1px solid var(--line); border-left:4px solid var(--green-dk); border-radius:12px; padding:16px 18px; margin-top:20px; }
   .card h2 { font-size:1.05rem; margin:0 0 8px; font-family:'Courier New', monospace; text-transform:uppercase; letter-spacing:1px; color:var(--green); }
   .card p { line-height:1.55; margin:0 0 10px; }
@@ -97,7 +104,20 @@
     <img src="icons/icon-192.svg" alt="Ask Tito icon">
     <div class="txt" id="installtxt"><b>Put Tito on your home screen.</b><br>One tap to the ruling, every game day.</div>
     <button type="button" id="installbtn">Add</button>
+    <button type="button" class="ghost" id="applebtn">iPhone? Here's how</button>
     <button type="button" class="x" id="installx" aria-label="Dismiss">✕</button>
+  </div>
+
+  <div class="applepanel" id="applepanel">
+    <div class="applehead">
+      <b id="appletitle">For iPhone and iPad</b>
+      <button type="button" class="x" id="appleclose" aria-label="Close">✕</button>
+    </div>
+    <ol>
+      <li id="applestep1">Tap the Share button in Safari.</li>
+      <li id="applestep2">Scroll down and tap “Add to Home Screen.”</li>
+      <li id="applestep3">Tap “Add.” Tito is then on your home screen, no App Store.</li>
+    </ol>
   </div>
 
   <form class="askbox" id="askform">
@@ -245,7 +265,13 @@ var LABELS = {
         verdictRight: "You got it. With 6:00 left in the third, the clock restarts on the referee's ready signal once the ball is set. It only waits for the snap inside the last 2 minutes of the first half and the last 5 minutes of the game.",
         verdictWrong: "Tito rules against you on this one. With 6:00 left in the third, the clock restarts on the referee's ready signal once the ball is set. It only waits for the snap inside the last 2 minutes of the first half and the last 5 minutes of the game.",
         score: "Tito vs Audience starts here.",
-        footNote: "Rulings are drawn from the NFL Rulebook." },
+        footNote: "Rulings are drawn from the NFL Rulebook.",
+        appleBtn: "iPhone? Here's how",
+        appleTitle: "For iPhone and iPad",
+        appleStep1: "Tap the Share button in Safari.",
+        appleStep2: "Scroll down and tap “Add to Home Screen.”",
+        appleStep3: "Tap “Add.” Tito is then on your home screen, no App Store.",
+        appleClose: "Close" },
   de: { sub: "Das ist Tito, Football-Savant. Was zwischen den Linien passiert ist, weiß er. Hier entscheidet er über die Regeln. Stell die Frage, über die die Bar gestritten hat.",
         placeholder: "frag hier",
         btn: "Entscheide es", rulingHead: "Die Entscheidung", whyHead: "Warum es alle falsch verstehen",
@@ -257,7 +283,13 @@ var LABELS = {
         verdictRight: "Richtig. Bei 6:00 Minuten im dritten Viertel läuft die Uhr mit dem Freigabe-Signal des Schiedsrichters weiter, sobald der Ball bereit liegt. Nur in den letzten 2 Minuten der ersten Halbzeit und den letzten 5 Minuten des Spiels wartet sie auf den Snap.",
         verdictWrong: "Tito entscheidet hier gegen dich. Bei 6:00 Minuten im dritten Viertel läuft die Uhr mit dem Freigabe-Signal des Schiedsrichters weiter, sobald der Ball bereit liegt. Nur in den letzten 2 Minuten der ersten Halbzeit und den letzten 5 Minuten des Spiels wartet sie auf den Snap.",
         score: "Tito vs Publikum startet hier.",
-        footNote: "Die Entscheidungen stammen aus dem NFL Rulebook." },
+        footNote: "Die Entscheidungen stammen aus dem NFL Rulebook.",
+        appleBtn: "iPhone? So geht's",
+        appleTitle: "Für iPhone und iPad",
+        appleStep1: "Tippe in Safari auf die Teilen-Taste.",
+        appleStep2: "Scrolle nach unten und tippe auf „Zum Home-Bildschirm“.",
+        appleStep3: "Tippe auf „Hinzufügen“. Tito ist dann auf deinem Home-Bildschirm, ganz ohne App Store.",
+        appleClose: "Schließen" },
   es: { sub: "Conoce a Tito, sabio del fútbol americano. Si pasó entre las líneas, él lo sabe. Aquí él decide sobre las reglas. Haz la pregunta que se discutió en el bar.",
         placeholder: "pregunta aquí",
         btn: "Decídelo", rulingHead: "La decisión", whyHead: "Por qué todos se equivocan",
@@ -269,7 +301,13 @@ var LABELS = {
         verdictRight: "Correcto. Con 6:00 en el tercer cuarto, el reloj se reanuda con la señal del árbitro en cuanto el balón está listo. Solo espera al snap en los últimos 2 minutos de la primera mitad y los últimos 5 minutos del partido.",
         verdictWrong: "Tito decide en tu contra en esta. Con 6:00 en el tercer cuarto, el reloj se reanuda con la señal del árbitro en cuanto el balón está listo. Solo espera al snap en los últimos 2 minutos de la primera mitad y los últimos 5 minutos del partido.",
         score: "Tito contra la Audiencia empieza aquí.",
-        footNote: "Las decisiones provienen del NFL Rulebook." },
+        footNote: "Las decisiones provienen del NFL Rulebook.",
+        appleBtn: "¿iPhone? Así se hace",
+        appleTitle: "Para iPhone y iPad",
+        appleStep1: "Toca el botón Compartir en Safari.",
+        appleStep2: "Desplázate hacia abajo y toca «Añadir a pantalla de inicio».",
+        appleStep3: "Toca «Añadir». Tito quedará en tu pantalla de inicio, sin App Store.",
+        appleClose: "Cerrar" },
   pt: { sub: "Conheça Tito, sábio do futebol americano. Se aconteceu entre as linhas, ele sabe. Aqui ele decide sobre as regras. Faça a pergunta que o bar discutiu.",
         placeholder: "pergunte aqui",
         btn: "Decida", rulingHead: "A decisão", whyHead: "Por que todo mundo erra",
@@ -281,7 +319,13 @@ var LABELS = {
         verdictRight: "Você acertou. Com 6:00 no terceiro quarto, o relógio volta a correr com o sinal do árbitro assim que a bola está pronta. Ele só espera o snap nos últimos 2 minutos do primeiro tempo e nos últimos 5 minutos do jogo.",
         verdictWrong: "Tito decide contra você nesta. Com 6:00 no terceiro quarto, o relógio volta a correr com o sinal do árbitro assim que a bola está pronta. Ele só espera o snap nos últimos 2 minutos do primeiro tempo e nos últimos 5 minutos do jogo.",
         score: "Tito contra a Audiência começa aqui.",
-        footNote: "As decisões vêm do NFL Rulebook." }
+        footNote: "As decisões vêm do NFL Rulebook.",
+        appleBtn: "iPhone? Veja como",
+        appleTitle: "Para iPhone e iPad",
+        appleStep1: "Toque no botão Compartilhar no Safari.",
+        appleStep2: "Role para baixo e toque em «Adicionar à Tela de Início».",
+        appleStep3: "Toque em «Adicionar». Tito fica na sua tela de início, sem App Store.",
+        appleClose: "Fechar" }
 };
 
 var STOPWORDS = {
@@ -321,6 +365,12 @@ function applyLabels() {
   $("vote-b").textContent = L.optB;
   $("call-score").textContent = L.score;
   $("foot-note").textContent = L.footNote;
+  $("applebtn").textContent = L.appleBtn;
+  $("appletitle").textContent = L.appleTitle;
+  $("applestep1").textContent = L.appleStep1;
+  $("applestep2").textContent = L.appleStep2;
+  $("applestep3").textContent = L.appleStep3;
+  $("appleclose").setAttribute("aria-label", L.appleClose);
   var btns = document.querySelectorAll(".langs button");
   for (var i = 0; i < btns.length; i++) {
     if (btns[i].getAttribute("data-lang") === lang) { btns[i].classList.add("active"); }
@@ -446,7 +496,8 @@ if ("serviceWorker" in navigator) {
 (function () {
   var bar = document.getElementById("installbar");
   var btn = document.getElementById("installbtn");
-  var txt = document.getElementById("installtxt");
+  var appleBtn = document.getElementById("applebtn");
+  var panel = document.getElementById("applepanel");
   var deferred = null;
   var standalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
   if (standalone) return;
@@ -456,20 +507,27 @@ if ("serviceWorker" in navigator) {
     e.preventDefault(); deferred = e; bar.classList.add("show");
   });
   window.addEventListener("appinstalled", function () {
-    deferred = null; bar.classList.remove("show");
+    deferred = null; bar.classList.remove("show"); panel.classList.remove("show");
   });
   if (isIOS) {
-    txt.innerHTML = "<b>Put Tito on your home screen.</b><br>Tap the Share button, then \u201CAdd to Home Screen.\u201D One tap to the ruling, every game day.";
-    btn.style.display = "none";
+    /* No install prompt exists on iOS: the bar shows with both buttons,
+       and either one opens the Apple steps panel below. */
     bar.classList.add("show");
   }
   btn.addEventListener("click", function () {
-    if (!deferred) { bar.classList.remove("show"); return; }
+    if (!deferred) { panel.classList.add("show"); return; }
     deferred.prompt();
-    deferred.userChoice.then(function () { deferred = null; bar.classList.remove("show"); });
+    deferred.userChoice.then(function () { deferred = null; bar.classList.remove("show"); panel.classList.remove("show"); });
+  });
+  appleBtn.addEventListener("click", function () {
+    panel.classList.toggle("show");
+  });
+  document.getElementById("appleclose").addEventListener("click", function () {
+    panel.classList.remove("show");
   });
   document.getElementById("installx").addEventListener("click", function () {
     bar.classList.remove("show");
+    panel.classList.remove("show");
     try { localStorage.setItem("rq_install_dismissed", "1"); } catch (e) {}
   });
 })();
