@@ -55,6 +55,8 @@
   .card h2 { font-size:1.05rem; margin:0 0 8px; font-family:'Courier New', monospace; text-transform:uppercase; letter-spacing:1px; color:var(--green); }
   .card p { line-height:1.55; margin:0 0 10px; }
   .why-h { font-family:'Courier New', monospace; font-size:.78rem; text-transform:uppercase; letter-spacing:1px; color:var(--dim); margin:14px 0 4px; }
+  .asked-h { font-family:'Courier New', monospace; font-size:.78rem; text-transform:uppercase; letter-spacing:1px; color:var(--dim); margin:0 0 4px; }
+  .asked-q { font-style:italic; margin:0 0 12px; }
   .cite { color:var(--dim); font-size:.85rem; font-family:'Courier New', monospace; margin:0; }
   .chips { margin-top:14px; }
   .chips p { color:var(--dim); font-size:.9rem; margin:0 0 8px; }
@@ -256,7 +258,7 @@ var RULINGS = [
 var LABELS = {
   en: { sub: "Meet Tito, football savant. If it happened between the lines, he knows it. Here he rules on the rules. Ask the question the bar argued about.",
         placeholder: "ask here",
-        btn: "Rule on it", rulingHead: "The ruling", whyHead: "Why everyone gets it wrong",
+        btn: "Rule on it", askedHead: "YOU ASKED", rulingHead: "The ruling", whyHead: "Why everyone gets it wrong",
         tryHead: "Try one of these:",
         refusal: "I only rule on football rules. Ask me why the clock kept running.",
         rulingWait: "Tito is ruling…",
@@ -276,7 +278,7 @@ var LABELS = {
         appleClose: "Close" },
   de: { sub: "Das ist Tito, Football-Savant. Was zwischen den Linien passiert ist, weiß er. Hier entscheidet er über die Regeln. Stell die Frage, über die die Bar gestritten hat.",
         placeholder: "frag hier",
-        btn: "Entscheide es", rulingHead: "Die Entscheidung", whyHead: "Warum es alle falsch verstehen",
+        btn: "Entscheide es", askedHead: "DEINE FRAGE", rulingHead: "Die Entscheidung", whyHead: "Warum es alle falsch verstehen",
         tryHead: "Versuch eine davon:",
         refusal: "Ich entscheide nur über Football-Regeln. Frag mich, warum die Uhr weitergelaufen ist.",
         rulingWait: "Tito entscheidet…",
@@ -296,7 +298,7 @@ var LABELS = {
         appleClose: "Schließen" },
   es: { sub: "Conoce a Tito, sabio del fútbol americano. Si pasó entre las líneas, él lo sabe. Aquí él decide sobre las reglas. Haz la pregunta que se discutió en el bar.",
         placeholder: "pregunta aquí",
-        btn: "Decídelo", rulingHead: "La decisión", whyHead: "Por qué todos se equivocan",
+        btn: "Decídelo", askedHead: "TU PREGUNTA", rulingHead: "La decisión", whyHead: "Por qué todos se equivocan",
         tryHead: "Prueba una de estas:",
         refusal: "Solo decido sobre reglas del fútbol americano. Pregúntame por qué el reloj siguió corriendo.",
         rulingWait: "Tito está decidiendo…",
@@ -316,7 +318,7 @@ var LABELS = {
         appleClose: "Cerrar" },
   pt: { sub: "Conheça Tito, sábio do futebol americano. Se aconteceu entre as linhas, ele sabe. Aqui ele decide sobre as regras. Faça a pergunta que o bar discutiu.",
         placeholder: "pergunte aqui",
-        btn: "Decida", rulingHead: "A decisão", whyHead: "Por que todo mundo erra",
+        btn: "Decida", askedHead: "SUA PERGUNTA", rulingHead: "A decisão", whyHead: "Por que todo mundo erra",
         tryHead: "Experimente uma destas:",
         refusal: "Eu só decido sobre regras do futebol americano. Pergunte por que o relógio continuou correndo.",
         rulingWait: "Tito está decidindo…",
@@ -351,6 +353,7 @@ var lang = "en";
 try { lang = localStorage.getItem("rq_lang") || "en"; } catch (e) { lang = "en"; }
 if (!LABELS[lang]) { lang = "en"; }
 var lastRuling = null;
+var lastAsked = "";
 
 function $(id) { return document.getElementById(id); }
 
@@ -431,16 +434,32 @@ function esc(s) {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
+/* The "you asked" block at the top of every answer card: the label
+   is static page copy; the question itself is the visitor's own
+   input and is filled in with textContent only, never as HTML. */
+function askedBlockHTML() {
+  if (!lastAsked) { return ""; }
+  var L = LABELS[lang];
+  return '<p class="asked-h">' + esc(L.askedHead) + '</p>' +
+    '<p class="asked-q" id="asked-q"></p>';
+}
+function fillAsked() {
+  if (!lastAsked) { return; }
+  var el = $("asked-q");
+  if (el) { el.textContent = lastAsked; }
+}
+
 function renderRuling(ruling) {
   lastRuling = ruling;
   var L = LABELS[lang];
   var c = ruling.t[lang] || ruling.t.en;
   $("result").innerHTML =
-    '<div class="card"><h2>' + esc(L.rulingHead) + '</h2>' +
+    '<div class="card">' + askedBlockHTML() + '<h2>' + esc(L.rulingHead) + '</h2>' +
     '<p>' + esc(c.ruling) + '</p>' +
     '<p class="why-h">' + esc(L.whyHead) + '</p>' +
     '<p>' + esc(c.why) + '</p>' +
     '<p class="cite">' + esc(c.cite) + '</p></div>';
+  fillAsked();
 }
 
 function renderRefusal() {
@@ -453,15 +472,16 @@ function renderRefusal() {
     chips += '<button type="button" class="chip" data-ruling="' + picks[i].id + '">' + esc(label) + '</button>';
   }
   $("result").innerHTML =
-    '<div class="card"><h2>' + esc(L.rulingHead) + '</h2>' +
+    '<div class="card">' + askedBlockHTML() + '<h2>' + esc(L.rulingHead) + '</h2>' +
     '<p>' + esc(L.refusal) + '</p>' +
     '<div class="chips"><p>' + esc(L.tryHead) + '</p>' + chips + '</div></div>';
+  fillAsked();
   var chipBtns = document.querySelectorAll(".chip");
   for (var k = 0; k < chipBtns.length; k++) {
     chipBtns[k].addEventListener("click", function () {
       var id = this.getAttribute("data-ruling");
       for (var m = 0; m < RULINGS.length; m++) {
-        if (RULINGS[m].id === id) { renderRuling(RULINGS[m]); }
+        if (RULINGS[m].id === id) { lastAsked = this.textContent; renderRuling(RULINGS[m]); }
       }
     });
   }
@@ -472,11 +492,12 @@ function renderRefusal() {
 function renderAnswerFields(c) {
   var L = LABELS[lang];
   $("result").innerHTML =
-    '<div class="card"><h2>' + esc(L.rulingHead) + '</h2>' +
+    '<div class="card">' + askedBlockHTML() + '<h2>' + esc(L.rulingHead) + '</h2>' +
     '<p>' + esc(c.ruling) + '</p>' +
     '<p class="why-h">' + esc(L.whyHead) + '</p>' +
     '<p>' + esc(c.why) + '</p>' +
     '<p class="cite">' + esc(c.cite) + '</p></div>';
+  fillAsked();
 }
 
 function renderWaiting() {
@@ -496,21 +517,23 @@ function renderUnverified() {
     chips += '<button type="button" class="chip" data-ruling="' + picks[i].id + '">' + esc(label) + '</button>';
   }
   $("result").innerHTML =
-    '<div class="card"><h2>' + esc(L.rulingHead) + '</h2>' +
+    '<div class="card">' + askedBlockHTML() + '<h2>' + esc(L.rulingHead) + '</h2>' +
     '<p>' + esc(L.unverified) + '</p>' +
     '<div class="chips"><p>' + esc(L.tryHead) + '</p>' + chips + '</div></div>';
+  fillAsked();
   var chipBtns = document.querySelectorAll(".chip");
   for (var k = 0; k < chipBtns.length; k++) {
     chipBtns[k].addEventListener("click", function () {
       var id = this.getAttribute("data-ruling");
       for (var m = 0; m < RULINGS.length; m++) {
-        if (RULINGS[m].id === id) { renderRuling(RULINGS[m]); }
+        if (RULINGS[m].id === id) { lastAsked = this.textContent; renderRuling(RULINGS[m]); }
       }
     });
   }
 }
 
 function localAsk(text) {
+  lastAsked = text;
   var ruling = matchRuling(text);
   if (ruling) { renderRuling(ruling); } else { renderRefusal(); }
 }
@@ -518,6 +541,7 @@ function localAsk(text) {
 $("askform").addEventListener("submit", function (ev) {
   ev.preventDefault();
   var text = $("askinput").value.trim();
+  lastAsked = text;
   if (!text) { renderRefusal(); return; }
   var detected = detectLang(text);
   if (detected && detected !== lang) { setLang(detected, false); }
