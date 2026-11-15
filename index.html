@@ -51,7 +51,7 @@
   .applepanel .applehead b { color:var(--green); }
   .applepanel ol { margin:8px 0 2px; padding-left:20px; line-height:1.55; }
   .applepanel .x { background:none; border:0; color:var(--dim); cursor:pointer; padding:4px 6px; font-size:1rem; }
-  .card { background:var(--panel); border:1px solid var(--line); border-left:4px solid var(--green-dk); border-radius:12px; padding:16px 18px; margin-top:20px; }
+  .card { background:var(--panel); border:1px solid var(--green-dk); border-left:4px solid var(--green-dk); border-radius:12px; padding:16px 18px; margin-top:20px; }
   .card h2 { font-size:1.05rem; margin:0 0 8px; font-family:'Courier New', monospace; text-transform:uppercase; letter-spacing:1px; color:var(--green); }
   .card p { line-height:1.55; margin:0 0 10px; }
   .why-h { font-family:'Courier New', monospace; font-size:.78rem; text-transform:uppercase; letter-spacing:1px; color:var(--dim); margin:14px 0 4px; }
@@ -70,6 +70,11 @@
   .score { color:var(--green); font-family:'Courier New', monospace; font-size:.85rem; }
   footer { margin-top:28px; text-align:center; color:var(--dim); font-size:.85rem; line-height:1.6; }
   footer a { color:var(--green); text-decoration:none; }
+  @media (max-width:520px) {
+    .install .txt { flex:1 1 calc(100% - 50px); }
+    .install button { flex:1 1 auto; }
+    .install .x { flex:0 0 auto; }
+  }
 </style>
 <script type="application/ld+json">
 {
