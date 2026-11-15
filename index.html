@@ -433,6 +433,16 @@ applyLabels();
 renderRuling(RULINGS[0]);
 </script>
 <script>
+/* Service worker: required for Chrome to offer the install prompt at all.
+   sw.js is network-first for pages, so registration can never pin a stale
+   copy of this page. */
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("/sw.js").catch(function () {});
+  });
+}
+</script>
+<script>
 (function () {
   var bar = document.getElementById("installbar");
   var btn = document.getElementById("installbtn");
@@ -444,6 +454,9 @@ renderRuling(RULINGS[0]);
   var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
   window.addEventListener("beforeinstallprompt", function (e) {
     e.preventDefault(); deferred = e; bar.classList.add("show");
+  });
+  window.addEventListener("appinstalled", function () {
+    deferred = null; bar.classList.remove("show");
   });
   if (isIOS) {
     txt.innerHTML = "<b>Put Tito on your home screen.</b><br>Tap the Share button, then \u201CAdd to Home Screen.\u201D One tap to the ruling, every game day.";
