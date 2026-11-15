@@ -8,7 +8,7 @@
    - Manifest and icons: cache-first. They change rarely and version with
      the cache name below.
    Bump CACHE when this file's behavior or the precached shell changes. */
-var CACHE = "rq-v2";
+var CACHE = "rq-v3";
 var PRECACHE = [
   "/manifest.webmanifest",
   "/icons/icon-192.svg",

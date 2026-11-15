@@ -259,6 +259,8 @@ var LABELS = {
         btn: "Rule on it", rulingHead: "The ruling", whyHead: "Why everyone gets it wrong",
         tryHead: "Try one of these:",
         refusal: "I only rule on football rules. Ask me why the clock kept running.",
+        rulingWait: "Tito is ruling…",
+        unverified: "That one is not in my verified book yet. I have written it down, and it gets checked before it joins the rulings.",
         callH: "You make the call",
         callQ: "Runner steps out at the 40 with 6:00 left in the third quarter. Does the clock restart on the snap, or on the referee's ready signal?",
         optA: "On the snap", optB: "On the referee's ready signal",
@@ -277,6 +279,8 @@ var LABELS = {
         btn: "Entscheide es", rulingHead: "Die Entscheidung", whyHead: "Warum es alle falsch verstehen",
         tryHead: "Versuch eine davon:",
         refusal: "Ich entscheide nur über Football-Regeln. Frag mich, warum die Uhr weitergelaufen ist.",
+        rulingWait: "Tito entscheidet…",
+        unverified: "Das steht noch nicht in meinem geprüften Buch. Ich habe es aufgeschrieben, und es wird geprüft, bevor es in die Entscheidungen aufgenommen wird.",
         callH: "Dein Call",
         callQ: "Läufer tritt an der 40 ins Aus, 6:00 Minuten im dritten Viertel übrig. Läuft die Uhr beim Snap weiter, oder mit dem Freigabe-Signal des Schiedsrichters?",
         optA: "Beim Snap", optB: "Mit dem Signal des Schiedsrichters",
@@ -295,6 +299,8 @@ var LABELS = {
         btn: "Decídelo", rulingHead: "La decisión", whyHead: "Por qué todos se equivocan",
         tryHead: "Prueba una de estas:",
         refusal: "Solo decido sobre reglas del fútbol americano. Pregúntame por qué el reloj siguió corriendo.",
+        rulingWait: "Tito está decidiendo…",
+        unverified: "Esa todavía no está en mi libro verificado. La he anotado, y se revisa antes de unirse a las decisiones.",
         callH: "Tú decides",
         callQ: "El corredor sale por la banda en la 40 con 6:00 por jugar en el tercer cuarto. ¿El reloj se reanuda en el snap o con la señal del árbitro?",
         optA: "En el snap", optB: "Con la señal del árbitro",
@@ -313,6 +319,8 @@ var LABELS = {
         btn: "Decida", rulingHead: "A decisão", whyHead: "Por que todo mundo erra",
         tryHead: "Experimente uma destas:",
         refusal: "Eu só decido sobre regras do futebol americano. Pergunte por que o relógio continuou correndo.",
+        rulingWait: "Tito está decidindo…",
+        unverified: "Essa ainda não está no meu livro verificado. Eu anotei, e ela será verificada antes de entrar para as decisões.",
         callH: "Você decide",
         callQ: "O corredor sai pela lateral na linha de 40 com 6:00 restantes no terceiro quarto. O relógio volta a correr no snap ou com o sinal do árbitro?",
         optA: "No snap", optB: "Com o sinal do árbitro",
@@ -377,6 +385,15 @@ function applyLabels() {
     else { btns[i].classList.remove("active"); }
   }
 }
+
+/* ---------- Realtime ask engine (staged Nov 15, 2026) ----------
+   The Cloudflare Worker endpoint for live rulings. Ships EMPTY:
+   with no endpoint set, the ask box behaves exactly as the local
+   7-ruling matcher it has always been. At deploy time this one line
+   is set to the Worker URL (see ../README.md); every failure of the
+   endpoint (network, timeout, monthly cap, provider down) falls
+   back to the local matcher, so the box never dead-ends. */
+var ASK_ENDPOINT = "https://asktito-rules.tomas-gregorio.workers.dev/ask";
 
 function detectLang(text) {
   var lower = " " + text.toLowerCase() + " ";
@@ -450,14 +467,92 @@ function renderRefusal() {
   }
 }
 
+/* Renders a ruling that arrived from the realtime endpoint (bank
+   or live): same card the local matcher renders, fed from fields. */
+function renderAnswerFields(c) {
+  var L = LABELS[lang];
+  $("result").innerHTML =
+    '<div class="card"><h2>' + esc(L.rulingHead) + '</h2>' +
+    '<p>' + esc(c.ruling) + '</p>' +
+    '<p class="why-h">' + esc(L.whyHead) + '</p>' +
+    '<p>' + esc(c.why) + '</p>' +
+    '<p class="cite">' + esc(c.cite) + '</p></div>';
+}
+
+function renderWaiting() {
+  var L = LABELS[lang];
+  $("result").innerHTML =
+    '<div class="card"><h2>' + esc(L.rulingHead) + '</h2>' +
+    '<p>' + esc(L.rulingWait) + '</p></div>';
+}
+
+function renderUnverified() {
+  lastRuling = null;
+  var L = LABELS[lang];
+  var picks = [RULINGS[0], RULINGS[6], RULINGS[3]];
+  var chips = "";
+  for (var i = 0; i < picks.length; i++) {
+    var label = picks[i].q[lang] || picks[i].q.en;
+    chips += '<button type="button" class="chip" data-ruling="' + picks[i].id + '">' + esc(label) + '</button>';
+  }
+  $("result").innerHTML =
+    '<div class="card"><h2>' + esc(L.rulingHead) + '</h2>' +
+    '<p>' + esc(L.unverified) + '</p>' +
+    '<div class="chips"><p>' + esc(L.tryHead) + '</p>' + chips + '</div></div>';
+  var chipBtns = document.querySelectorAll(".chip");
+  for (var k = 0; k < chipBtns.length; k++) {
+    chipBtns[k].addEventListener("click", function () {
+      var id = this.getAttribute("data-ruling");
+      for (var m = 0; m < RULINGS.length; m++) {
+        if (RULINGS[m].id === id) { renderRuling(RULINGS[m]); }
+      }
+    });
+  }
+}
+
+function localAsk(text) {
+  var ruling = matchRuling(text);
+  if (ruling) { renderRuling(ruling); } else { renderRefusal(); }
+}
+
 $("askform").addEventListener("submit", function (ev) {
   ev.preventDefault();
   var text = $("askinput").value.trim();
   if (!text) { renderRefusal(); return; }
   var detected = detectLang(text);
   if (detected && detected !== lang) { setLang(detected, false); }
-  var ruling = matchRuling(text);
-  if (ruling) { renderRuling(ruling); } else { renderRefusal(); }
+  if (!ASK_ENDPOINT) { localAsk(text); return; }
+  var btn = $("askbtn");
+  btn.disabled = true;
+  renderWaiting();
+  var settled = false;
+  var timer = setTimeout(function () {
+    if (settled) { return; }
+    settled = true; btn.disabled = false; localAsk(text);
+  }, 12000);
+  fetch(ASK_ENDPOINT, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ question: text, lang: lang })
+  }).then(function (res) {
+    if (!res.ok) { throw new Error("endpoint " + res.status); }
+    return res.json();
+  }).then(function (data) {
+    if (settled) { return; }
+    settled = true; clearTimeout(timer); btn.disabled = false;
+    if (data && (data.type === "bank" || data.type === "live")) {
+      lastRuling = null;
+      renderAnswerFields(data);
+    } else if (data && data.type === "unverified") {
+      renderUnverified();
+    } else {
+      renderRefusal();
+    }
+  }).catch(function () {
+    if (settled) { return; }
+    settled = true; clearTimeout(timer); btn.disabled = false;
+    localAsk(text);
+  });
 });
 
 var langBtns = document.querySelectorAll(".langs button");
