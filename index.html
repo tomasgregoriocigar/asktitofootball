@@ -87,7 +87,8 @@
     { "@type": "Question", "name": "What makes it a catch?", "acceptedAnswer": { "@type": "Answer", "text": "Secure control of the ball, then a body part in bounds (two feet, or one body part other than the hands), then a football move or enough time to make one. All three, in that order." } },
     { "@type": "Question", "name": "What is the 10-second runoff?", "acceptedAnswer": { "@type": "Answer", "text": "Inside the final two minutes of a half, after the two-minute warning, certain clock-stopping events caused by the offense (a foul, an injury, a replay reversal that changes a ruling) can cost 10 seconds off the clock, and the game or half can end on it. The defense can decline the runoff for a foul or an injury, but not for a replay reversal; a timeout can buy the 10 seconds back." } },
     { "@type": "Question", "name": "Can you really kick a field goal on a free kick after a fair catch?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. After a fair catch, the receiving team may take a free kick from the catch spot, no rush (defense lines up 10 yards away); through the uprights is 3 points. Cameron Dicker made one for the Chargers in December 2024, the first success since 1976." } },
-    { "@type": "Question", "name": "How is overtime different in the playoffs?", "acceptedAnswer": { "@type": "Answer", "text": "Both teams are now guaranteed a possession in the regular season too (2025 change, 10-minute period); the old sudden-death walk-off on a first-possession touchdown is gone. Playoff overtime is untimed: they play until someone wins, 15-minute periods." } }
+    { "@type": "Question", "name": "How is overtime different in the playoffs?", "acceptedAnswer": { "@type": "Answer", "text": "Both teams are now guaranteed a possession in the regular season too (2025 change, 10-minute period); the old sudden-death walk-off on a first-possession touchdown is gone. Playoff overtime is untimed: they play until someone wins, 15-minute periods." } },
+    { "@type": "Question", "name": "How does the play clock work?", "acceptedAnswer": { "@type": "Answer", "text": "The play clock is 40 seconds, starting the moment the previous play ends. After an administrative stoppage (a timeout, a change of possession, a penalty enforcement, the two-minute warning, the end of a period, a Try, or a free kick) it is 25 seconds, starting on the referee's whistle. Let it reach zero before the snap and it is delay of game, 5 yards." } }
   ]
 }
 </script>
@@ -153,7 +154,7 @@
 <script>
 "use strict";
 
-/* ---------- The bank: 7 rulings. Text from rules_bank.md drafts.
+/* ---------- The bank: 8 rulings. Text from rules_bank.md drafts.
    Rulings 1 (clock) and 7 (overtime) carry full DE/ES/PT renderings;
    the ruling is identical in substance in every language. ---------- */
 var RULINGS = [
@@ -255,6 +256,16 @@ var RULINGS = [
       pt: { ruling: "As duas equipes agora têm uma posse garantida também na temporada regular (mudança de 2025, período de 10 minutos); a antiga vitória por morte súbita com um touchdown na primeira posse acabou. Nos playoffs, a prorrogação é aberta: joga-se em períodos de 15 minutos até haver um vencedor.",
             why: "A regra que os torcedores lembram foi substituída em etapas (playoffs de 2022, temporada regular de 2025) e a memória nunca acompanhou.",
             cite: "NFL Rulebook — Rule 16, Section 1, Articles 3 and 4" }
+    }
+  },
+  {
+    id: "playclock",
+    keys: ["play clock", "delay of game", "40 seconds", "25 seconds", "how long to snap", "snap in time"],
+    q: { en: "How does the play clock work?" },
+    t: {
+      en: { ruling: "The play clock is 40 seconds, starting the moment the previous play ends. After an administrative stoppage (a timeout, a change of possession, a penalty enforcement, the two-minute warning, the end of a period, a Try, or a free kick) it is 25 seconds, starting on the referee's whistle. Let it reach zero before the snap and it is delay of game, 5 yards.",
+            why: "Fans see 25 after every timeout and think the clock shrank. It did not shrink. The 40 only runs in the normal flow of play; any stoppage the officials have to administer restarts the offense on the shorter 25.",
+            cite: "NFL Rulebook — Rule 4, Section 6, Articles 1 and 2" }
     }
   }
 ];
@@ -551,6 +562,13 @@ $("askform").addEventListener("submit", function (ev) {
   var detected = detectLang(text);
   if (detected && detected !== lang) { setLang(detected, false); }
   if (!ASK_ENDPOINT) { localAsk(text); return; }
+  /* Bank-first (Nov 15): a locked local ruling is served at once
+     and is never overridden by the engine. The engine's own bank
+     syncs only on redeploy, and its gated path can return
+     "unverified" for a question the book already answers (the
+     play-clock gap). The engine handles everything off-bank. */
+  var localHit = matchRuling(text);
+  if (localHit) { renderRuling(localHit); return; }
   var btn = $("askbtn");
   btn.disabled = true;
   renderWaiting();
