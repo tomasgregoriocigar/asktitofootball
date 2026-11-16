@@ -107,6 +107,24 @@
     <button type="button" data-lang="pt">PT</button>
   </div>
 
+  <form class="askbox" id="askform">
+    <input type="text" id="askinput" autocomplete="off" aria-label="Ask a football rules question">
+    <button type="submit" id="askbtn">Rule on it</button>
+  </form>
+
+  <div id="result"></div>
+
+  <div class="card call">
+    <h2 id="call-h">You make the call</h2>
+    <p id="call-q">Runner steps out at the 40 with 6:00 left in the third quarter. Does the clock restart on the snap, or on the referee's ready signal?</p>
+    <button type="button" class="vote" id="vote-a">On the snap</button>
+    <button type="button" class="vote" id="vote-b">On the referee's ready signal</button>
+    <div class="reveal" id="call-reveal">
+      <p id="call-verdict"></p>
+      <p class="score" id="call-score">Tito vs Audience starts here.</p>
+    </div>
+  </div>
+
   <div class="install" id="installbar">
     <img src="icons/icon-192.svg" alt="Ask Tito icon">
     <div class="txt" id="installtxt"><b>Put Tito on your home screen.</b><br>One tap to the ruling, every game day.</div>
@@ -125,24 +143,6 @@
       <li id="applestep2">Scroll down and tap “Add to Home Screen.”</li>
       <li id="applestep3">Tap “Add.” Tito is then on your home screen, no App Store.</li>
     </ol>
-  </div>
-
-  <form class="askbox" id="askform">
-    <input type="text" id="askinput" autocomplete="off" aria-label="Ask a football rules question">
-    <button type="submit" id="askbtn">Rule on it</button>
-  </form>
-
-  <div id="result"></div>
-
-  <div class="card call">
-    <h2 id="call-h">You make the call</h2>
-    <p id="call-q">Runner steps out at the 40 with 6:00 left in the third quarter. Does the clock restart on the snap, or on the referee's ready signal?</p>
-    <button type="button" class="vote" id="vote-a">On the snap</button>
-    <button type="button" class="vote" id="vote-b">On the referee's ready signal</button>
-    <div class="reveal" id="call-reveal">
-      <p id="call-verdict"></p>
-      <p class="score" id="call-score">Tito vs Audience starts here.</p>
-    </div>
   </div>
 
   <footer>
