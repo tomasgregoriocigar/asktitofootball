@@ -161,10 +161,13 @@
 var RULINGS = [
   {
     id: "oob",
-    keys: ["out of bounds", "stops the clock", "stop the clock", "clock stop", "bounds stop", "running out",
-           "seitenauslinie", "ins aus", "uhr stoppt", "stoppt die uhr", "läuft die uhr", "auslinie",
-           "fuera de los límites", "fuera de limites", "fuera del campo", "detiene el reloj", "para el reloj", "reloj se detiene", "salió del campo", "salio del campo",
-           "fora de campo", "saiu de campo", "relógio para", "para o relógio", "parar o relógio", "relogio para", "saiu pela lateral"],
+    keys: ["clock stop", "bounds stop", "running out", "ins aus", "uhr stoppt", "läuft die uhr", "auslinie",
+               "fuera de los límites", "fuera de limites", "fuera del campo", "para el reloj",
+               "reloj se detiene", "para o relógio", "parar o relógio"],
+    strong: ["out of bounds", "stops the clock", "stop the clock", "stoppt die uhr", "seitenauslinie",
+               "detiene el reloj", "salió del campo", "salio del campo", "fora de campo", "saiu de campo",
+               "sai de campo", "saiu pela lateral", "relógio para", "relogio para"],
+    exclude: ["fumble", "play clock", "fair catch"],
     q: { en: "I thought running out of bounds stops the clock.",
          de: "Stoppt die Uhr, wenn er ins Aus läuft?",
          es: "¿Se detiene el reloj cuando sale del campo?",
@@ -186,7 +189,9 @@ var RULINGS = [
   },
   {
     id: "firstdown",
-    keys: ["first down", "first down stop"],
+    keys: ["first down stop"],
+    strong: ["first down"],
+    exclude: [],
     q: { en: "Does a first down stop the clock?" },
     t: {
       en: { ruling: "Not in the NFL. The clock keeps running on a first down (it may pause for a measurement and restarts on the ready signal).",
@@ -196,7 +201,9 @@ var RULINGS = [
   },
   {
     id: "grounding",
-    keys: ["grounding", "throwing it away", "throw it away", "throw away", "intentional"],
+    keys: ["throw away", "intentional"],
+    strong: ["grounding", "throwing it away", "throw it away"],
+    exclude: [],
     q: { en: "When is throwing it away intentional grounding?" },
     t: {
       en: { ruling: "Grounding needs all of it: the passer is still inside the tackle box, under pressure, and throws a forward pass that is not in the direction and vicinity of an originally eligible receiver. Outside the pocket, the pass only has to reach or cross the line of scrimmage.",
@@ -206,7 +213,10 @@ var RULINGS = [
   },
   {
     id: "catch",
-    keys: ["catch", "reception complete", "completed pass", "possession of the ball"],
+    keys: ["catch", "reception"],
+    strong: ["makes it a catch", "what is a catch", "completed pass", "reception complete",
+               "possession of the ball"],
+    exclude: ["fair catch"],
     q: { en: "What makes it a catch?" },
     t: {
       en: { ruling: "Secure control of the ball, then a body part in bounds (two feet, or one body part other than the hands), then a football move or enough time to make one. All three, in that order.",
@@ -216,7 +226,9 @@ var RULINGS = [
   },
   {
     id: "runoff",
-    keys: ["runoff", "10-second", "10 second", "ten second", "run off"],
+    keys: ["run off"],
+    strong: ["runoff", "10-second", "10 second", "ten second"],
+    exclude: [],
     q: { en: "What is the 10-second runoff?" },
     t: {
       en: { ruling: "Inside the final two minutes of a half, after the two-minute warning, certain clock-stopping events caused by the offense (a foul, an injury, a replay reversal that changes a ruling) can cost 10 seconds off the clock, and the game or half can end on it. The defense can decline the runoff for a foul or an injury, but not for a replay reversal; a timeout can buy the 10 seconds back.",
@@ -226,7 +238,9 @@ var RULINGS = [
   },
   {
     id: "faircatch",
-    keys: ["fair catch", "free kick"],
+    keys: ["fair catch"],
+    strong: ["free kick", "kick a field goal", "fair catch free kick"],
+    exclude: ["signal", "invalid"],
     q: { en: "Can you really kick a field goal on a free kick after a fair catch?" },
     t: {
       en: { ruling: "Yes. After a fair catch, the receiving team may take a free kick from the catch spot, no rush (defense lines up 10 yards away); through the uprights is 3 points. Cameron Dicker made one for the Chargers in December 2024, the first success since 1976.",
@@ -236,10 +250,10 @@ var RULINGS = [
   },
   {
     id: "overtime",
-    keys: ["overtime", "over time", "extra period", "playoff overtime",
-           "verlängerung", "overtime regeln",
-           "tiempo extra", "prórroga", "prorroga", "tiempo suplementario",
-           "prorrogação", "prorrogacao"],
+    keys: ["over time", "extra period", "overtime regeln", "tiempo suplementario"],
+    strong: ["overtime", "playoff overtime", "verlängerung", "tiempo extra", "prórroga", "prorroga",
+               "prorrogação", "prorrogacao"],
+    exclude: [],
     q: { en: "How is overtime different in the playoffs?",
          de: "Wie läuft die Verlängerung in den Playoffs?",
          es: "¿Cómo es el tiempo extra en los playoffs?",
@@ -261,7 +275,9 @@ var RULINGS = [
   },
   {
     id: "playclock",
-    keys: ["play clock", "delay of game", "40 seconds", "25 seconds", "how long to snap", "snap in time"],
+    keys: ["40 seconds", "25 seconds", "how long to snap", "snap in time"],
+    strong: ["play clock", "delay of game"],
+    exclude: ["replay", "review"],
     q: { en: "How does the play clock work?" },
     t: {
       en: { ruling: "The play clock is 40 seconds, starting the moment the previous play ends. After an administrative stoppage (a timeout, a change of possession, a penalty enforcement, the two-minute warning, the end of a period, a Try, or a free kick) it is 25 seconds, starting on the referee's whistle. Let it reach zero before the snap and it is delay of game, 5 yards.",
@@ -271,7 +287,10 @@ var RULINGS = [
   },
   {
     id: "timeouts",
-    keys: ["timeouts", "time outs", "how many timeouts", "charged timeout", "lose a timeout", "carry over"],
+    keys: ["timeouts", "time outs", "charged timeout", "lose a timeout", "lose", "loose"],
+    strong: ["how many timeouts", "how many time outs", "carry over", "per half", "each half"],
+    exclude: ["injury", "injured", "hurt", "two-minute", "two minute", "runoff", "run off", "10-second",
+               "10 second", "run out of timeouts"],
     q: { en: "How many timeouts does a team get in a game?" },
     t: {
       en: { ruling: "Three charged timeouts in each half, and two in a regular-season overtime period. They do not carry over: timeouts left unused at halftime are gone, and the count starts fresh in the second half.",
@@ -444,17 +463,38 @@ function detectLang(text) {
   return bestScore >= 2 ? best : null;
 }
 
+/* A locked ruling takes real intent, never one stray shared word:
+   an exclusion key vetoes its entry outright (a fair catch is not
+   the catch ruling; a fumble out of bounds is not the game-clock
+   ruling; an injury timeout is not the timeouts count), and what
+   remains qualifies only on a distinctive strong phrase or on two
+   independent ordinary key hits. Strong hits score 3, ordinary 1;
+   the best score wins. The Worker runs the identical algorithm
+   (realtime/worker/src/match.js) so both sides of the wire agree. */
 function matchRuling(text) {
   var lower = text.toLowerCase();
   var best = null, bestScore = 0;
   for (var i = 0; i < RULINGS.length; i++) {
-    var score = 0;
-    for (var j = 0; j < RULINGS[i].keys.length; j++) {
-      if (lower.indexOf(RULINGS[i].keys[j]) !== -1) { score += 1; }
+    var r = RULINGS[i];
+    var vetoed = false;
+    var ex = r.exclude || [];
+    for (var e = 0; e < ex.length; e++) {
+      if (lower.indexOf(ex[e]) !== -1) { vetoed = true; break; }
     }
-    if (score > bestScore) { bestScore = score; best = RULINGS[i]; }
+    if (vetoed) { continue; }
+    var strongHits = 0, hits = 0;
+    var st = r.strong || [];
+    for (var s = 0; s < st.length; s++) {
+      if (lower.indexOf(st[s]) !== -1) { strongHits += 1; }
+    }
+    for (var j = 0; j < r.keys.length; j++) {
+      if (lower.indexOf(r.keys[j]) !== -1) { hits += 1; }
+    }
+    if (strongHits === 0 && hits < 2) { continue; }
+    var score = 3 * strongHits + hits;
+    if (score > bestScore) { bestScore = score; best = r; }
   }
-  return bestScore > 0 ? best : null;
+  return best;
 }
 
 function esc(s) {
