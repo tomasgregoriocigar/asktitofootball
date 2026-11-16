@@ -88,7 +88,8 @@
     { "@type": "Question", "name": "What is the 10-second runoff?", "acceptedAnswer": { "@type": "Answer", "text": "Inside the final two minutes of a half, after the two-minute warning, certain clock-stopping events caused by the offense (a foul, an injury, a replay reversal that changes a ruling) can cost 10 seconds off the clock, and the game or half can end on it. The defense can decline the runoff for a foul or an injury, but not for a replay reversal; a timeout can buy the 10 seconds back." } },
     { "@type": "Question", "name": "Can you really kick a field goal on a free kick after a fair catch?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. After a fair catch, the receiving team may take a free kick from the catch spot, no rush (defense lines up 10 yards away); through the uprights is 3 points. Cameron Dicker made one for the Chargers in December 2024, the first success since 1976." } },
     { "@type": "Question", "name": "How is overtime different in the playoffs?", "acceptedAnswer": { "@type": "Answer", "text": "Both teams are now guaranteed a possession in the regular season too (2025 change, 10-minute period); the old sudden-death walk-off on a first-possession touchdown is gone. Playoff overtime is untimed: they play until someone wins, 15-minute periods." } },
-    { "@type": "Question", "name": "How does the play clock work?", "acceptedAnswer": { "@type": "Answer", "text": "The play clock is 40 seconds, starting the moment the previous play ends. After an administrative stoppage (a timeout, a change of possession, a penalty enforcement, the two-minute warning, the end of a period, a Try, or a free kick) it is 25 seconds, starting on the referee's whistle. Let it reach zero before the snap and it is delay of game, 5 yards." } }
+    { "@type": "Question", "name": "How does the play clock work?", "acceptedAnswer": { "@type": "Answer", "text": "The play clock is 40 seconds, starting the moment the previous play ends. After an administrative stoppage (a timeout, a change of possession, a penalty enforcement, the two-minute warning, the end of a period, a Try, or a free kick) it is 25 seconds, starting on the referee's whistle. Let it reach zero before the snap and it is delay of game, 5 yards." } },
+    { "@type": "Question", "name": "How many timeouts does a team get in a game?", "acceptedAnswer": { "@type": "Answer", "text": "Three charged timeouts in each half, and two in a regular-season overtime period. They do not carry over: timeouts left unused at halftime are gone, and the count starts fresh in the second half." } }
   ]
 }
 </script>
@@ -154,7 +155,7 @@
 <script>
 "use strict";
 
-/* ---------- The bank: 8 rulings. Text from rules_bank.md drafts.
+/* ---------- The bank: 9 rulings. Text from rules_bank.md drafts.
    Rulings 1 (clock) and 7 (overtime) carry full DE/ES/PT renderings;
    the ruling is identical in substance in every language. ---------- */
 var RULINGS = [
@@ -266,6 +267,16 @@ var RULINGS = [
       en: { ruling: "The play clock is 40 seconds, starting the moment the previous play ends. After an administrative stoppage (a timeout, a change of possession, a penalty enforcement, the two-minute warning, the end of a period, a Try, or a free kick) it is 25 seconds, starting on the referee's whistle. Let it reach zero before the snap and it is delay of game, 5 yards.",
             why: "Fans see 25 after every timeout and think the clock shrank. It did not shrink. The 40 only runs in the normal flow of play; any stoppage the officials have to administer restarts the offense on the shorter 25.",
             cite: "NFL Rulebook — Rule 4, Section 6, Articles 1 and 2" }
+    }
+  },
+  {
+    id: "timeouts",
+    keys: ["timeouts", "time outs", "how many timeouts", "charged timeout", "lose a timeout", "carry over"],
+    q: { en: "How many timeouts does a team get in a game?" },
+    t: {
+      en: { ruling: "Three charged timeouts in each half, and two in a regular-season overtime period. They do not carry over: timeouts left unused at halftime are gone, and the count starts fresh in the second half.",
+            why: "Fans count six for the game and wonder where they went. The book counts by the half, not by the game. And you can lose one without ever calling it: an unsuccessful coach's challenge is charged as a timeout.",
+            cite: "NFL Rulebook — Rule 4, Section 5, Article 1; Rule 15, Section 6, Article 1" }
     }
   }
 ];
