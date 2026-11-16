@@ -89,7 +89,8 @@
     { "@type": "Question", "name": "Can you really kick a field goal on a free kick after a fair catch?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. After a fair catch, the receiving team may take a free kick from the catch spot, no rush (defense lines up 10 yards away); through the uprights is 3 points. Cameron Dicker made one for the Chargers in December 2024, the first success since 1976." } },
     { "@type": "Question", "name": "How is overtime different in the playoffs?", "acceptedAnswer": { "@type": "Answer", "text": "Both teams are now guaranteed a possession in the regular season too (2025 change, 10-minute period); the old sudden-death walk-off on a first-possession touchdown is gone. Playoff overtime is untimed: they play until someone wins, 15-minute periods." } },
     { "@type": "Question", "name": "How does the play clock work?", "acceptedAnswer": { "@type": "Answer", "text": "The play clock is 40 seconds, starting the moment the previous play ends. After an administrative stoppage (a timeout, a change of possession, a penalty enforcement, the two-minute warning, the end of a period, a Try, or a free kick) it is 25 seconds, starting on the referee's whistle. Let it reach zero before the snap and it is delay of game, 5 yards." } },
-    { "@type": "Question", "name": "How many timeouts does a team get in a game?", "acceptedAnswer": { "@type": "Answer", "text": "Three charged timeouts in each half, and two in a regular-season overtime period. They do not carry over: timeouts left unused at halftime are gone, and the count starts fresh in the second half." } }
+    { "@type": "Question", "name": "How many timeouts does a team get in a game?", "acceptedAnswer": { "@type": "Answer", "text": "Three charged timeouts in each half, and two in a regular-season overtime period. They do not carry over: timeouts left unused at halftime are gone, and the count starts fresh in the second half." } },
+    { "@type": "Question", "name": "How long is a football game?", "acceptedAnswer": { "@type": "Answer", "text": "Sixty minutes. Four periods of 15 minutes each, with a 13-minute halftime between the second and third periods. If the score is tied at the end of the fourth period, overtime extends the game." } }
   ]
 }
 </script>
@@ -296,6 +297,19 @@ var RULINGS = [
       en: { ruling: "Three charged timeouts in each half, and two in a regular-season overtime period. They do not carry over: timeouts left unused at halftime are gone, and the count starts fresh in the second half.",
             why: "Fans count six for the game and wonder where they went. The book counts by the half, not by the game. And you can lose one without ever calling it: an unsuccessful coach's challenge is charged as a timeout.",
             cite: "NFL Rulebook — Rule 4, Section 5, Article 1; Rule 15, Section 6, Article 1" }
+    }
+  },
+  {
+    id: "gamelength",
+    keys: ["quarters", "quarter", "60 minutes", "game last", "long is a game"],
+    strong: ["how long is a football game", "how long is an nfl game", "how long does a football game last",
+             "how long does an nfl game last", "length of game", "how long is each quarter", "how long are quarters"],
+    exclude: ["overtime", "play clock"],
+    q: { en: "How long is a football game?" },
+    t: {
+      en: { ruling: "Sixty minutes. Four periods of 15 minutes each, with a 13-minute halftime between the second and third periods. If the score is tied at the end of the fourth period, overtime extends the game.",
+            why: "The game clock says 60 minutes, but a broadcast runs about three hours. The difference is everything that stops the clock: incomplete passes, runners out of bounds, timeouts, penalties, reviews, and the breaks between periods.",
+            cite: "NFL Rulebook — Rule 4, Section 1, Article 1" }
     }
   }
 ];
