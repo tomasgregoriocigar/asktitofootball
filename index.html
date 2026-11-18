@@ -68,6 +68,9 @@
   .reveal { display:none; margin-top:10px; }
   .reveal.show { display:block; }
   .score { color:var(--green); font-family:'Courier New', monospace; font-size:.85rem; }
+.board { margin-top:28px; }
+.board-h { font-family:'Courier New', monospace; font-size:1.05rem; text-transform:uppercase; letter-spacing:1px; color:var(--green); margin:0 0 4px; }
+.board-card .asked-q { font-size:1.1rem; color:var(--ink); }
   footer { margin-top:28px; text-align:center; color:var(--dim); font-size:.85rem; line-height:1.6; }
   footer a { color:var(--green); text-decoration:none; }
   @media (max-width:520px) {
@@ -91,7 +94,11 @@
     { "@type": "Question", "name": "How does the play clock work?", "acceptedAnswer": { "@type": "Answer", "text": "The play clock is 40 seconds, starting the moment the previous play ends. After an administrative stoppage (a timeout, a change of possession, a penalty enforcement, the two-minute warning, the end of a period, a Try, or a free kick) it is 25 seconds, starting on the referee's whistle. Let it reach zero before the snap and it is delay of game, 5 yards." } },
     { "@type": "Question", "name": "How many timeouts does a team get in a game?", "acceptedAnswer": { "@type": "Answer", "text": "Three charged timeouts in each half, and two in a regular-season overtime period. They do not carry over: timeouts left unused at halftime are gone, and the count starts fresh in the second half." } },
     { "@type": "Question", "name": "How long is a football game?", "acceptedAnswer": { "@type": "Answer", "text": "Sixty minutes. Four periods of 15 minutes each, with a 13-minute halftime between the second and third periods. If the score is tied at the end of the fourth period, overtime extends the game." } },
-    { "@type": "Question", "name": "What happens if a quarterback crosses the line of scrimmage and throws a pass?", "acceptedAnswer": { "@type": "Answer", "text": "It is an illegal forward pass. Once the ball crosses the line of scrimmage, no forward pass is allowed on that down, and a pass thrown with the passer's whole body and the ball beyond the line is a foul. The penalty is loss of down and five yards from the spot where the ball was released." } }
+    { "@type": "Question", "name": "What happens if a quarterback crosses the line of scrimmage and throws a pass?", "acceptedAnswer": { "@type": "Answer", "text": "It is an illegal forward pass. Once the ball crosses the line of scrimmage, no forward pass is allowed on that down, and a pass thrown with the passer's whole body and the ball beyond the line is a foul. The penalty is loss of down and five yards from the spot where the ball was released." } },
+    { "@type": "Question", "name": "How is a safety scored?", "acceptedAnswer": { "@type": "Answer", "text": "A safety is worth 2 points, awarded to the defense. It happens when the ball is dead in the offense's possession behind its own goal line after that team's own impetus sent it there, or when the ball goes out of bounds behind that goal line. It also happens when the offense commits a foul behind its own goal line and the defense chooses to enforce the penalty at that spot. After a safety, the team that was scored upon must free kick the ball from its own 20-yard line." } },
+    { "@type": "Question", "name": "How many players have to be on the line of scrimmage at the snap?", "acceptedAnswer": { "@type": "Answer", "text": "The offense must have at least seven players on the line of scrimmage at the snap. Eligible receivers have to be on both ends of that line, and every player between them must be an ineligible receiver. Breaking this is illegal formation, a 5-yard penalty." } },
+    { "@type": "Question", "name": "What is the penalty for grabbing a facemask?", "acceptedAnswer": { "@type": "Answer", "text": "Grabbing a facemask is only a foul if the player twists, turns, pushes, pulls, or controls it, and the penalty is 15 yards. If the foul is by the defense, it is also an automatic first down, and a flagrant act can get the player disqualified. A player who grasps the mask must release it immediately." } },
+    { "@type": "Question", "name": "Why does a quarterback spike the ball?", "acceptedAnswer": { "@type": "Answer", "text": "He is buying time with a down. A quarterback is allowed to stop the game clock on purpose: if, immediately upon receiving the snap, he begins a continuous throwing motion and throws the ball directly into the ground, it is a legal incomplete pass, not intentional grounding. The clock stops, and the offense can huddle and call a real play. The trade is the down itself; the spike burns it." } }
   ]
 }
 </script>
@@ -149,6 +156,11 @@
     </div>
   </div>
 
+  <div class="board">
+    <h2 class="board-h">RULINGS ON THE BOARD</h2>
+    <div id="board"></div>
+  </div>
+
   <footer>
     <p><a href="https://moneyfootball.ai">moneyfootball.ai</a></p>
     <p id="foot-note">Rulings are drawn from the NFL Rulebook.</p>
@@ -157,7 +169,7 @@
 <script>
 "use strict";
 
-/* ---------- The bank: 9 rulings. Text from rules_bank.md drafts.
+/* ---------- The bank: 15 rulings. Text from rules_bank.md drafts.
    Rulings 1 (clock) and 7 (overtime) carry full DE/ES/PT renderings;
    the ruling is identical in substance in every language. ---------- */
 var RULINGS = [
@@ -325,6 +337,55 @@ var RULINGS = [
             why: "Fans expect the flag to be about the throw itself, and some expect 15 yards like the big fouls. It is five, but the loss of down is the real bite: the down is gone, and the five yards are walked off from where he let the ball go, not from the line of scrimmage.",
             cite: "NFL Rulebook — Rule 8, Section 1, Article 2" }
     }
+  },
+  {
+    id: "safety",
+    keys: ["safety", "tackled in the end zone", "in his own end zone"],
+    strong: ["how is a safety scored", "what is a safety", "safety scored", "points is a safety", "is a safety worth"],
+    exclude: ["strong safety", "free safety", "safety position", "safety blitz"],
+    q: { en: "How is a safety scored?" },
+    t: {
+      en: { ruling: "A safety is worth 2 points, awarded to the defense. It happens when the ball is dead in the offense's possession behind its own goal line after that team's own impetus sent it there, or when the ball goes out of bounds behind that goal line. It also happens when the offense commits a foul behind its own goal line and the defense chooses to enforce the penalty at that spot. After a safety, the team that was scored upon must free kick the ball from its own 20-yard line.",
+            why: "Fans picture a safety as just a tackle in the end zone, but the book's test is whose impetus put the ball there. If the defense's own momentum carries it into the end zone after an interception or recovery, it is not a safety.",
+            cite: "NFL Rulebook — Rule 11, Section 5, Article 1" }
+    }
+  },
+  {
+    id: "formation",
+    keys: ["seven players", "line up", "formation penalty"],
+    strong: ["on the line of scrimmage at the snap", "players on the line of scrimmage",
+             "illegal formation", "how many players on the line"],
+    exclude: ["false start", "offside", "neutral zone"],
+    q: { en: "How many players have to be on the line of scrimmage at the snap?" },
+    t: {
+      en: { ruling: "The offense must have at least seven players on the line of scrimmage at the snap. Eligible receivers have to be on both ends of that line, and every player between them must be an ineligible receiver. Breaking this is illegal formation, a 5-yard penalty.",
+            why: "Fans often think the offense can line up any way it likes before the snap, but the book sets the minimum at seven on the line, with eligible players only at the ends. Shifting the formation does not change the requirement at the snap.",
+            cite: "NFL Rulebook — Rule 7, Section 5, Article 1" }
+    }
+  },
+  {
+    id: "facemask",
+    keys: ["mask penalty", "15 yards for a mask"],
+    strong: ["facemask", "face mask", "grabbing the mask"],
+    q: { en: "What is the penalty for grabbing a facemask?" },
+    t: {
+      en: { ruling: "Grabbing a facemask is only a foul if the player twists, turns, pushes, pulls, or controls it, and the penalty is 15 yards. If the foul is by the defense, it is also an automatic first down, and a flagrant act can get the player disqualified. A player who grasps the mask must release it immediately.",
+            why: "Fans remember facemask as a flat 15-yard penalty for any touch, but the foul is about controlling or moving the mask, not just touching it. The automatic first down on a defensive facemask is the part people forget.",
+            cite: "NFL Rulebook — Rule 12, Section 2, Article 15" }
+    }
+  },
+  {
+    id: "spike",
+    keys: ["spike", "on the floor", "rush back to the huddle", "why does the quarterback throw"],
+    strong: ["spike the ball", "spike it", "spiking the ball", "throw the ball into the ground",
+             "throws the ball into the ground", "stop the clock by throwing", "spike to stop the clock"],
+    exclude: ["after a touchdown", "celebration", "volleyball"],
+    q: { en: "Why does a quarterback spike the ball?" },
+    t: {
+      en: { ruling: "He is buying time with a down. A quarterback is allowed to stop the game clock on purpose: if, immediately upon receiving the snap, he begins a continuous throwing motion and throws the ball directly into the ground, it is a legal incomplete pass, not intentional grounding. The clock stops, and the offense can huddle and call a real play. The trade is the down itself; the spike burns it.",
+            why: "Fans see a wasted throw. It is the opposite: the spike is the one deliberate incompletion the book allows, because it happens the instant the ball is snapped. Hesitate first, look around, then throw it down, and the same act becomes intentional grounding.",
+            cite: "NFL Rulebook — Rule 8, Section 2, Article 1" }
+    }
   }
 ];
 
@@ -436,6 +497,7 @@ function setLang(next, rerender) {
   try { localStorage.setItem("rq_lang", lang); } catch (e) {}
   applyLabels();
   if (rerender && lastRuling) { renderRuling(lastRuling); }
+  renderBoard();
 }
 
 function applyLabels() {
@@ -555,6 +617,33 @@ function renderRuling(ruling) {
     '<p>' + esc(c.why) + '</p>' +
     '<p class="cite">' + esc(c.cite) + '</p></div>';
   fillAsked();
+}
+
+/* ---------- The rulings board ----------
+   Every banked ruling, shown on the page with its question.
+   Tomas' context rule: wherever a ruling is shown, the question
+   travels with it, always. Each card therefore leads with the
+   entry's full canonical question (the YOU ASKED treatment),
+   then the ruling, the why and the cite — the live answer card's
+   shape — rendered from this same RULINGS array, so the board
+   can never drift from what the matcher serves. */
+function renderBoard() {
+  var L = LABELS[lang];
+  var html = "";
+  for (var i = 0; i < RULINGS.length; i++) {
+    var r = RULINGS[i];
+    var c = r.t[lang] || r.t.en;
+    var q = (r.q && (r.q[lang] || r.q.en)) || "";
+    html += '<div class="card board-card">' +
+      '<p class="asked-h">' + esc(L.askedHead) + '</p>' +
+      '<p class="asked-q board-q">' + esc(q) + '</p>' +
+      '<h2>' + esc(L.rulingHead) + '</h2>' +
+      '<p>' + esc(c.ruling) + '</p>' +
+      '<p class="why-h">' + esc(L.whyHead) + '</p>' +
+      '<p>' + esc(c.why) + '</p>' +
+      '<p class="cite">' + esc(c.cite) + '</p></div>';
+  }
+  $("board").innerHTML = html;
 }
 
 function renderRefusal() {
@@ -714,6 +803,7 @@ $("vote-b").addEventListener("click", function () { vote(true, this); });
 /* Init: restore remembered language, show the sample ruling (bank #1). */
 applyLabels();
 renderRuling(RULINGS[0]);
+renderBoard();
 </script>
 <script>
 /* Service worker: required for Chrome to offer the install prompt at all.
