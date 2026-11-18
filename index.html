@@ -90,7 +90,8 @@
     { "@type": "Question", "name": "How is overtime different in the playoffs?", "acceptedAnswer": { "@type": "Answer", "text": "Both teams are now guaranteed a possession in the regular season too (2025 change, 10-minute period); the old sudden-death walk-off on a first-possession touchdown is gone. Playoff overtime is untimed: they play until someone wins, 15-minute periods." } },
     { "@type": "Question", "name": "How does the play clock work?", "acceptedAnswer": { "@type": "Answer", "text": "The play clock is 40 seconds, starting the moment the previous play ends. After an administrative stoppage (a timeout, a change of possession, a penalty enforcement, the two-minute warning, the end of a period, a Try, or a free kick) it is 25 seconds, starting on the referee's whistle. Let it reach zero before the snap and it is delay of game, 5 yards." } },
     { "@type": "Question", "name": "How many timeouts does a team get in a game?", "acceptedAnswer": { "@type": "Answer", "text": "Three charged timeouts in each half, and two in a regular-season overtime period. They do not carry over: timeouts left unused at halftime are gone, and the count starts fresh in the second half." } },
-    { "@type": "Question", "name": "How long is a football game?", "acceptedAnswer": { "@type": "Answer", "text": "Sixty minutes. Four periods of 15 minutes each, with a 13-minute halftime between the second and third periods. If the score is tied at the end of the fourth period, overtime extends the game." } }
+    { "@type": "Question", "name": "How long is a football game?", "acceptedAnswer": { "@type": "Answer", "text": "Sixty minutes. Four periods of 15 minutes each, with a 13-minute halftime between the second and third periods. If the score is tied at the end of the fourth period, overtime extends the game." } },
+    { "@type": "Question", "name": "What happens if a quarterback crosses the line of scrimmage and throws a pass?", "acceptedAnswer": { "@type": "Answer", "text": "It is an illegal forward pass. Once the ball crosses the line of scrimmage, no forward pass is allowed on that down, and a pass thrown with the passer's whole body and the ball beyond the line is a foul. The penalty is loss of down and five yards from the spot where the ball was released." } }
   ]
 }
 </script>
@@ -310,6 +311,19 @@ var RULINGS = [
       en: { ruling: "Sixty minutes. Four periods of 15 minutes each, with a 13-minute halftime between the second and third periods. If the score is tied at the end of the fourth period, overtime extends the game.",
             why: "The game clock says 60 minutes, but a broadcast runs about three hours. The difference is everything that stops the clock: incomplete passes, runners out of bounds, timeouts, penalties, reviews, and the breaks between periods.",
             cite: "NFL Rulebook — Rule 4, Section 1, Article 1" }
+    }
+  },
+  {
+    id: "illegalpass",
+    keys: ["line of scrimmage and throws", "crosses the line and throws", "qb throws a pass", "quarterback throws", "run past the line and throw"],
+    strong: ["crosses the line of scrimmage", "crossed the line of scrimmage", "beyond the line of scrimmage",
+             "past the line of scrimmage", "illegal forward pass", "throw past the line", "throws past the line"],
+    exclude: ["intentional grounding", "grounding"],
+    q: { en: "What happens if a quarterback crosses the line of scrimmage and throws a pass?" },
+    t: {
+      en: { ruling: "It is an illegal forward pass. Once the ball crosses the line of scrimmage, no forward pass is allowed on that down, and a pass thrown with the passer's whole body and the ball beyond the line is a foul. The penalty is loss of down and five yards from the spot where the ball was released.",
+            why: "Fans expect the flag to be about the throw itself, and some expect 15 yards like the big fouls. It is five, but the loss of down is the real bite: the down is gone, and the five yards are walked off from where he let the ball go, not from the line of scrimmage.",
+            cite: "NFL Rulebook — Rule 8, Section 1, Article 2" }
     }
   }
 ];
