@@ -148,17 +148,6 @@
 
   <div id="result"></div>
 
-  <div class="card call">
-    <h2 id="call-h">You make the call</h2>
-    <p id="call-q">Runner steps out at the 40 with 6:00 left in the third quarter. Does the clock restart on the snap, or on the referee's ready signal?</p>
-    <button type="button" class="vote" id="vote-a">On the snap</button>
-    <button type="button" class="vote" id="vote-b">On the referee's ready signal</button>
-    <div class="reveal" id="call-reveal">
-      <p id="call-verdict"></p>
-      <p class="score" id="call-score">Tito vs Audience starts here.</p>
-    </div>
-  </div>
-
   <div class="board">
     <h2 class="board-h">RULINGS ON THE BOARD</h2>
     <div id="board"></div>
@@ -552,7 +541,17 @@ function setLang(next, rerender) {
   lang = next;
   try { localStorage.setItem("rq_lang", lang); } catch (e) {}
   applyLabels();
-  if (rerender && lastRuling) { renderRuling(lastRuling); }
+  if (rerender && lastRuling) {
+    /* If the shown card's question is the bank entry's own question
+       (launch card, board/chip pick), re-show it in the new language.
+       A question the visitor typed stays exactly as typed. */
+    if (lastRuling.q) {
+      for (var lg in lastRuling.q) {
+        if (lastAsked === lastRuling.q[lg]) { lastAsked = lastRuling.q[lang] || lastRuling.q.en; break; }
+      }
+    }
+    renderRuling(lastRuling);
+  }
   renderBoard();
 }
 
@@ -562,11 +561,6 @@ function applyLabels() {
   $("sub").textContent = L.sub;
   $("askinput").placeholder = L.placeholder;
   $("askbtn").textContent = L.btn;
-  $("call-h").textContent = L.callH;
-  $("call-q").textContent = L.callQ;
-  $("vote-a").textContent = L.optA;
-  $("vote-b").textContent = L.optB;
-  $("call-score").textContent = L.score;
   $("foot-note").textContent = L.footNote;
   $("applebtn").textContent = L.appleBtn;
   $("appletitle").textContent = L.appleTitle;
@@ -871,19 +865,12 @@ for (var b = 0; b < langBtns.length; b++) {
   });
 }
 
-function vote(pickedCorrect, btn) {
-  var L = LABELS[lang];
-  $("vote-a").disabled = true;
-  $("vote-b").disabled = true;
-  btn.classList.add("picked");
-  $("call-verdict").textContent = pickedCorrect ? L.verdictRight : L.verdictWrong;
-  $("call-reveal").classList.add("show");
-}
-$("vote-a").addEventListener("click", function () { vote(false, this); });
-$("vote-b").addEventListener("click", function () { vote(true, this); });
-
-/* Init: restore remembered language, show the sample ruling (bank #1). */
+/* Init: restore remembered language, show the sample ruling (bank #1).
+   The question travels with the ruling here too: seed lastAsked with
+   bank #1's own question so the launch card carries its YOU ASKED
+   line like every other card (Tomás, Nov 19, 2026). */
 applyLabels();
+lastAsked = RULINGS[0].q[lang] || RULINGS[0].q.en;
 renderRuling(RULINGS[0]);
 renderBoard();
 </script>
