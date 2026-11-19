@@ -98,7 +98,8 @@
     { "@type": "Question", "name": "How is a safety scored?", "acceptedAnswer": { "@type": "Answer", "text": "A safety is worth 2 points, awarded to the defense. It happens when the ball is dead in the offense's possession behind its own goal line after that team's own impetus sent it there, or when the ball goes out of bounds behind that goal line. It also happens when the offense commits a foul behind its own goal line and the defense chooses to enforce the penalty at that spot. After a safety, the team that was scored upon must free kick the ball from its own 20-yard line." } },
     { "@type": "Question", "name": "How many players have to be on the line of scrimmage at the snap?", "acceptedAnswer": { "@type": "Answer", "text": "The offense must have at least seven players on the line of scrimmage at the snap. Eligible receivers have to be on both ends of that line, and every player between them must be an ineligible receiver. Breaking this is illegal formation, a 5-yard penalty." } },
     { "@type": "Question", "name": "What is the penalty for grabbing a facemask?", "acceptedAnswer": { "@type": "Answer", "text": "Grabbing a facemask is only a foul if the player twists, turns, pushes, pulls, or controls it, and the penalty is 15 yards. If the foul is by the defense, it is also an automatic first down, and a flagrant act can get the player disqualified. A player who grasps the mask must release it immediately." } },
-    { "@type": "Question", "name": "Why does a quarterback spike the ball?", "acceptedAnswer": { "@type": "Answer", "text": "He is buying time with a down. A quarterback is allowed to stop the game clock on purpose: if, immediately upon receiving the snap, he begins a continuous throwing motion and throws the ball directly into the ground, it is a legal incomplete pass, not intentional grounding. The clock stops, and the offense can huddle and call a real play. The trade is the down itself; the spike burns it." } }
+    { "@type": "Question", "name": "Why does a quarterback spike the ball?", "acceptedAnswer": { "@type": "Answer", "text": "He is buying time with a down. A quarterback is allowed to stop the game clock on purpose: if, immediately upon receiving the snap, he begins a continuous throwing motion and throws the ball directly into the ground, it is a legal incomplete pass, not intentional grounding. The clock stops, and the offense can huddle and call a real play. The trade is the down itself; the spike burns it." } },
+    { "@type": "Question", "name": "When can a player return to the game after going to the medical tent?", "acceptedAnswer": { "@type": "Answer", "text": "The book's rule is about the injury timeout, not the tent: when play is stopped for an injured player, he must leave the game for the completion of one down before he can return. He may stay in without sitting out if either team calls a charged timeout, if his injury came from an opponent's foul, or if the period ends or the two-minute warning intervenes. Whether he is cleared to play again after a head injury check is a medical decision under the league's concussion protocol, not something the rulebook decides." } }
   ]
 }
 </script>
@@ -169,7 +170,7 @@
 <script>
 "use strict";
 
-/* ---------- The bank: 15 rulings. Text from rules_bank.md drafts.
+/* ---------- The bank: 16 rulings. Text from rules_bank.md drafts.
    Rulings 1 (clock) and 7 (overtime) carry full DE/ES/PT renderings;
    the ruling is identical in substance in every language. ---------- */
 var RULINGS = [
@@ -385,6 +386,19 @@ var RULINGS = [
       en: { ruling: "He is buying time with a down. A quarterback is allowed to stop the game clock on purpose: if, immediately upon receiving the snap, he begins a continuous throwing motion and throws the ball directly into the ground, it is a legal incomplete pass, not intentional grounding. The clock stops, and the offense can huddle and call a real play. The trade is the down itself; the spike burns it.",
             why: "Fans see a wasted throw. It is the opposite: the spike is the one deliberate incompletion the book allows, because it happens the instant the ball is snapped. Hesitate first, look around, then throw it down, and the same act becomes intentional grounding.",
             cite: "NFL Rulebook — Rule 8, Section 2, Article 1" }
+    }
+  },
+  {
+    id: "injuryreturn",
+    keys: ["injury timeout", "hurt player come back", "leave the game injured", "miss a play"],
+    strong: ["medical tent", "return to the game after going", "come back after injury",
+             "injured player return", "after going to the tent", "back in the game after injury"],
+    exclude: ["injured reserve", "reserve list", "season ending", "pup list"],
+    q: { en: "When can a player return to the game after going to the medical tent?" },
+    t: {
+      en: { ruling: "The book's rule is about the injury timeout, not the tent: when play is stopped for an injured player, he must leave the game for the completion of one down before he can return. He may stay in without sitting out if either team calls a charged timeout, if his injury came from an opponent's foul, or if the period ends or the two-minute warning intervenes. Whether he is cleared to play again after a head injury check is a medical decision under the league's concussion protocol, not something the rulebook decides.",
+            why: "Fans think the tent works like a pit stop, in and straight back out. The book makes him miss at least one play, and the exceptions are the part nobody knows: a charged timeout called by either team wipes the sit-out entirely.",
+            cite: "NFL Rulebook — Rule 4, Section 5, Article 3" }
     }
   }
 ];
